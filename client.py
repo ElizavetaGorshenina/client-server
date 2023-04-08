@@ -8,24 +8,13 @@
 '''
 
 print('ЗАДАНИЕ 1')
-task_1_w_1 = 'разработка'
-task_1_w_2 = 'сокет'
-task_1_w_3 = 'декоратор'
-print(task_1_w_1)
-print(task_1_w_2)
-print(task_1_w_3)
-print(type(task_1_w_1))
-print(type(task_1_w_2))
-print(type(task_1_w_3))
-task_1_w_1_b = task_1_w_1.encode('utf-8')
-task_1_w_2_b = task_1_w_2.encode('utf-8')
-task_1_w_3_b = task_1_w_3.encode('utf-8')
-print(task_1_w_1_b)
-print(task_1_w_2_b)
-print(task_1_w_3_b)
-print(type(task_1_w_1_b))
-print(type(task_1_w_2_b))
-print(type(task_1_w_3_b))
+task_1_words = ['разработка', 'сокет', 'декоратор']
+for word in task_1_words:
+    print(word)
+    print(type(word))
+    word_in_bytes = word.encode('utf-8')
+    print(word_in_bytes)
+    print(type(word_in_bytes))
 
 
 '''
@@ -37,21 +26,12 @@ print(type(task_1_w_3_b))
 '''
 
 print('ЗАДАНИЕ 2')
-task_2_w_1 = 'class'
-task_2_w_2 = 'function'
-task_2_w_3 = 'method'
-task_2_w_1_b = bytes(task_2_w_1, 'utf-8')
-task_2_w_2_b = bytes(task_2_w_2, 'utf-8')
-task_2_w_3_b = bytes(task_2_w_3, 'utf-8')
-print(type(task_2_w_1_b))
-print(type(task_2_w_2_b))
-print(type(task_2_w_3_b))
-print(task_2_w_1_b)
-print(task_2_w_2_b)
-print(task_2_w_3_b)
-print(len(task_2_w_1_b))
-print(len(task_2_w_2_b))
-print(len(task_2_w_3_b))
+task_2_words = ['class', 'function', 'method']
+for word in task_2_words:
+    word_in_bytes = bytes(word, 'utf-8')
+    print(type(word_in_bytes))
+    print(word_in_bytes)
+    print(len(word_in_bytes))
 
 
 '''
@@ -66,18 +46,12 @@ print(len(task_2_w_3_b))
 '''
 
 print('ЗАДАНИЕ 3')
-task_3_w_1 = 'attribute'
-task_3_w_2 = 'класс'
-task_3_w_3 = 'функция'
-task_3_w_4 = 'type'
-task_3_w_1_b = bytes(task_3_w_1, 'utf-8')
-task_3_w_2_b = bytes(task_3_w_2, 'utf-8')
-task_3_w_3_b = bytes(task_3_w_3, 'utf-8')
-task_3_w_4_b = bytes(task_3_w_4, 'utf-8')
-print(task_3_w_1_b)
-print(task_3_w_2_b)
-print(task_3_w_3_b)
-print(task_3_w_4_b)
+task_3_words = ['attribute', 'класс', 'функция', 'type']
+for word in task_3_words:
+    try:
+        word_in_bytes = word.encode('ascii')
+    except UnicodeEncodeError:
+        print(f"The word '{word}' can't be written in byte type as bytes can only contain ASCII literal characters.")
 
 
 '''
@@ -89,26 +63,12 @@ print(task_3_w_4_b)
 '''
 
 print('ЗАДАНИЕ 4')
-task_4_w_1 = 'разработка'
-task_4_w_2 = 'администрирование'
-task_4_w_3 = 'protocol'
-task_4_w_4 = 'standard'
-task_4_w_1_b = task_4_w_1.encode('utf-8')
-task_4_w_2_b = task_4_w_2.encode('utf-8')
-task_4_w_3_b = task_4_w_3.encode('utf-8')
-task_4_w_4_b = task_4_w_4.encode('utf-8')
-print(task_4_w_1_b)
-print(task_4_w_2_b)
-print(task_4_w_3_b)
-print(task_4_w_4_b)
-task_4_w_1 = task_4_w_1_b.decode('utf-8')
-task_4_w_2 = task_4_w_2_b.decode('utf-8')
-task_4_w_3 = task_4_w_3_b.decode('utf-8')
-task_4_w_4 = task_4_w_4_b.decode('utf-8')
-print(task_4_w_1)
-print(task_4_w_2)
-print(task_4_w_3)
-print(task_4_w_4)
+task_4_words = ['разработка', 'администрирование', 'protocol', 'standard']
+for word in task_4_words:
+    word_in_bytes = word.encode('utf-8')
+    print(word_in_bytes)
+    word = word_in_bytes.decode('utf-8')
+    print(word)
 
 
 '''
@@ -149,9 +109,17 @@ print('ЗАДАНИЕ 6')
 import locale
 
 
+task_6_strings = ['сетевое программирование', 'сокет', 'декоратор']
 def_coding = locale.getpreferredencoding()
 print(def_coding)
 
+f_n = open("test_file.txt", "w+")
+for string in task_6_strings:
+    f_n.write(f'{string}\n')
+f_n.close()
 with open('test_file.txt', encoding='utf-8') as f_n:
-    for el_str in f_n:
-        print(el_str)
+    try:
+        for el_str in f_n:
+            print(el_str)
+    except UnicodeDecodeError:
+        print('UnicodeDecodeError')

@@ -1,0 +1,18 @@
+{
+    "orders": [
+        {
+            "item": "\u0447\u0430\u0439\u043d\u0438\u043a",
+            "quantity": 1,
+            "price": 2500,
+            "buyer": "Liza",
+            "date": "04.04.2023"
+        },
+        {
+            "item": "\u0447\u0430\u0439",
+            "quantity": 2,
+            "price": 250,
+            "buyer": "Liza",
+            "date": "05.04.2023"
+        }
+    ]
+}
