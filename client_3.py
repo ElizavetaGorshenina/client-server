@@ -1,10 +1,9 @@
 from socket import *
 import time
-import json
 import argparse
+from server_3 import init_tcp_socket, decode_and_load_bytes, encode_and_dump_dict, send_data, get_data
 
-
-def main():
+def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'addr',
@@ -16,9 +15,17 @@ def main():
         type=str,
         help='server tcp-port as [<port>], please use [7777] by default'
     )
-    args = parser.parse_args()
-    s = socket(AF_INET, SOCK_STREAM)
-    s.connect((args.addr, int(args.port[1:-1])))
+    return parser.parse_args()
+
+
+def connect_socket(a_sock, address, port):
+    a_sock.connect((address, port))
+
+
+def main():
+    args = get_args()
+    s = init_tcp_socket()
+    connect_socket(s, args.addr, int(args.port[1:-1]))
     
     presence_msg = {
         "action": "presence",
@@ -28,10 +35,10 @@ def main():
             "status": "Yep, I am here!"
         }
     }
-    presence_msg_json_encoded = json.dumps(presence_msg).encode('utf-8')
-    s.send(presence_msg_json_encoded)
-    server_msg = s.recv(1024)
-    server_msg_decoded_json = json.loads(server_msg.decode('utf-8'))
+    presence_msg_json_encoded = encode_and_dump_dict(presence_msg)
+    send_data(s, presence_msg_json_encoded)
+    server_msg = get_data(s, 1024)
+    server_msg_decoded_json = decode_and_load_bytes(server_msg)
 
     s.close()
     print('Сообщение от сервера:', server_msg_decoded_json)
