@@ -2,7 +2,16 @@ from socket import *
 import time
 import json
 import argparse
+from log import server_log_config
 
+def write_log(func):
+    def wrapper(*args, **kwargs):
+        server_log_config.log.debug(f'Server module function {func.__name__} called')
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@write_log
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -22,34 +31,42 @@ def get_args():
     return parser.parse_args()
 
 
+@write_log
 def init_tcp_socket():
     return socket(AF_INET, SOCK_STREAM)
 
 
+@write_log
 def bind_socket(a_sock, address, port):
     a_sock.bind((address, port))
 
 
+@write_log
 def accept_connestion_socket(a_sock):
     return a_sock.accept()
 
 
+@write_log
 def get_data(a_sock, bytes_num):
     return a_sock.recv(bytes_num)
 
 
+@write_log
 def decode_and_load_bytes(bytes):
     return json.loads(bytes.decode('utf-8'))
 
 
+@write_log
 def encode_and_dump_dict(dict):
     return json.dumps(dict).encode('utf-8')
 
 
+@write_log
 def send_data(a_sock, data):
     return a_sock.send(data)
 
 
+@write_log
 def main():
     args = get_args()
     s = init_tcp_socket()
@@ -60,13 +77,14 @@ def main():
         data = get_data(client, 10000)
         response_code = 200
         try:
+            server_log_config.log.debug('Try/except clause expired')
             data_decoded_json = decode_and_load_bytes(data)
-            print('Было получено сообщение:', data_decoded_json)
+            server_log_config.log.info(f'Было получено сообщение: {json.dumps(data_decoded_json)}')
             alert_msg = "Welcome, client!"
         except json.decoder.JSONDecodeError:
             response_code = 400
             alert_msg = "Bad Request"
-            print('JSONDecodeError')
+            server_log_config.log.info('JSONDecodeError')
 
         response_msg = {
             "response": response_code,

@@ -2,7 +2,17 @@ from socket import *
 import time
 import argparse
 from server_3 import init_tcp_socket, decode_and_load_bytes, encode_and_dump_dict, send_data, get_data
+from log import client_log_config
+import json
 
+def write_log(func):
+    def wrapper(*args, **kwargs):
+        client_log_config.log.debug(f'Client module function {func.__name__} called')
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@write_log
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -18,10 +28,12 @@ def get_args():
     return parser.parse_args()
 
 
+@write_log
 def connect_socket(a_sock, address, port):
     a_sock.connect((address, port))
 
 
+@write_log
 def main():
     args = get_args()
     s = init_tcp_socket()
@@ -41,7 +53,7 @@ def main():
     server_msg_decoded_json = decode_and_load_bytes(server_msg)
 
     s.close()
-    print('Сообщение от сервера:', server_msg_decoded_json)
+    client_log_config.log.info(f'Сообщение от сервера: {json.dumps(server_msg_decoded_json)}')
 
 
 if __name__ == '__main__':
