@@ -4,15 +4,19 @@ import argparse
 from server_3 import init_tcp_socket, decode_and_load_bytes, encode_and_dump_dict, send_data, get_data
 from log import client_log_config
 import json
+import inspect
 
-def write_log(func):
+def log(func):
     def wrapper(*args, **kwargs):
-        client_log_config.log.debug(f'Client module function {func.__name__} called')
+        frm = inspect.stack()[1]
+        caller = frm[3]
+        caller_file = frm[1].split("\\")[-1]
+        client_log_config.log.debug(f'Вызов функции {func.__name__} с аргументами {args} {kwargs} из функции {caller} модуля {caller_file}')
         return func(*args, **kwargs)
     return wrapper
 
 
-@write_log
+@log
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -28,12 +32,11 @@ def get_args():
     return parser.parse_args()
 
 
-@write_log
+@log
 def connect_socket(a_sock, address, port):
     a_sock.connect((address, port))
 
 
-@write_log
 def main():
     args = get_args()
     s = init_tcp_socket()

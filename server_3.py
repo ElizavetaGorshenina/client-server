@@ -3,15 +3,19 @@ import time
 import json
 import argparse
 from log import server_log_config
+import inspect
 
-def write_log(func):
+def log(func):
     def wrapper(*args, **kwargs):
-        server_log_config.log.debug(f'Server module function {func.__name__} called')
+        frm = inspect.stack()[1]
+        caller = frm[3]
+        caller_file = frm[1].split("\\")[-1]
+        server_log_config.log.debug(f'Вызов функции {func.__name__} с аргументами {args} {kwargs} из функции {caller} модуля {caller_file}')
         return func(*args, **kwargs)
     return wrapper
 
 
-@write_log
+@log
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -31,42 +35,41 @@ def get_args():
     return parser.parse_args()
 
 
-@write_log
+@log
 def init_tcp_socket():
     return socket(AF_INET, SOCK_STREAM)
 
 
-@write_log
+@log
 def bind_socket(a_sock, address, port):
     a_sock.bind((address, port))
 
 
-@write_log
+@log
 def accept_connestion_socket(a_sock):
     return a_sock.accept()
 
 
-@write_log
+@log
 def get_data(a_sock, bytes_num):
     return a_sock.recv(bytes_num)
 
 
-@write_log
+@log
 def decode_and_load_bytes(bytes):
     return json.loads(bytes.decode('utf-8'))
 
 
-@write_log
+@log
 def encode_and_dump_dict(dict):
     return json.dumps(dict).encode('utf-8')
 
 
-@write_log
+@log
 def send_data(a_sock, data):
     return a_sock.send(data)
 
 
-@write_log
 def main():
     args = get_args()
     s = init_tcp_socket()
